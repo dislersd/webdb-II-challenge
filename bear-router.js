@@ -43,18 +43,37 @@ router.post("/", (req, res) => {
     });
 });
 
-router.put('/:id', async (req, res) => {
+router.put("/:id", async (req, res) => {
   try {
-    const {id} = req.params;
-    const count = await db("bears").update(req.body).where({id});
+    const { id } = req.params;
+    const count = await db("bears")
+      .update(req.body)
+      .where({ id });
     if (count > 0) {
-      res.status(200).json({message: "success"})
+      res.status(200).json({ message: "success" });
     } else {
-      res.status(400).json({ message: 'error cannot find' })
+      res.status(400).json({ message: "error cannot find" });
     }
   } catch (error) {
-    res.status(500).json({ message: 'error updating' })
+    res.status(500).json({ message: "error updating" });
   }
-})
+});
+
+router.delete("/:id", (req, res) => {
+  const { id } = req.params;
+  db("bears")
+    .delete()
+    .where({ id })
+    .then(fasho => {
+      if (fasho > 0) {
+        res.status(200).json({ message: "successfully deleted" });
+      } else {
+        res.status(404).json({ message: "bear not found" });
+      }
+    })
+    .catch(err => {
+      res.status(500).json({ message: "error deleting" });
+    });
+});
 
 module.exports = router;
